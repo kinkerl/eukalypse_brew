@@ -18,34 +18,39 @@ class Brew:
 
     def check_exist(self):
         for url in self.urls_exist:
-            print "check exists: %s" % self._create_url(url)
             response = requests.get(self._create_url(url))
-            assert response.status_code is 200
+            if not response.status_code == 200:
+                raise Exception("url exists ({0}) response not 200".format(url))
 
     def check_sitemap(self):
         for url in self.urls_sitemap:
-            print "check sitemap: %s" % self._create_url(url)
             response = requests.get(self._create_url(url))
-            assert response.status_code is 200
+            if not response.status_code == 200:
+                raise Exception("sitemap({0}) response not 200".format(url))
             r = requests.get(self.sitemap_schema_url + '/siteindex.xsd')
-            assert r.status_code is 200
+            if not r.status_code == 200:
+                raise Exception("sitemap schema ({0}) response not 200".format(url))
+
             if r.status_code == 200:
                 xmlschema_doc = etree.XML(r.content)
                 xmlschema = etree.XMLSchema(xmlschema_doc)
                 xmldoc = etree.XML(response.content)
-                assert xmlschema.validate(xmldoc)
-            try:
-                minidom.parseString(response.content)
-            except:
-                assert False
+                if not xmlschema.validate(xmldoc):
+                    raise Exception("sitemap does not validate")
+
+            minidom.parseString(response.content)
 
     def check_robots(self):
+        print "robots!!!!!!!!!!!!"
         for url in self.urls_robots:
-            print "check robots: %s" % self._create_url(url)
+            print "FIRST URL"
             response = requests.get(self._create_url(url))
-            assert response.status_code is 200
+            if not response.status_code == 200:
+                raise Exception("robots({0}) response not 200".format(url))
             for line in response.content.splitlines():
-                assert line.startswith(('User-agent: ', 'Disallow: ', 'Allow: '))
+                if not line.startswith(('User-agent: ', 'Disallow: ', 'Allow: ')):
+                    raise Exception("robots txt ({0}) has strange content".format(url))
+        print "TILL THE SNED"
 
     def check_all(self):
         """ find all functions starting with "check_" and call them"""
