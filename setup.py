@@ -23,6 +23,13 @@ class Tox(TestCommand):
         errno = tox.cmdline(self.test_args)
         sys.exit(errno)
 
+install_requires = [
+    'requests',
+    'lxml',
+    'furl'
+]
+
+
 setup(
     name="eukalypse_brew",
     author="Dennis Schwertel",
@@ -35,7 +42,7 @@ setup(
     packages=find_packages('src'),
     description='quick and dirty website testing toolbox',
     long_description=__doc__,
-    install_requires=['requests', 'lxml', 'furl'],
+    install_requires=install_requires,
     tests_require=['tox'],
     cmdclass={'test': Tox},
     classifiers=[
