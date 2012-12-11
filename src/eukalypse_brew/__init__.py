@@ -1,6 +1,7 @@
 import requests
 from lxml import etree
 from xml.dom import minidom
+from furl import furl
 
 
 class Brew:
@@ -14,7 +15,9 @@ class Brew:
         self.urls_robots = ['robots.txt']
 
     def _create_url(self, url):
-        return self.domain + url
+        f = furl(self.domain)
+        f.path = url
+        return f.url
 
     def check_exist(self):
         for url in self.urls_exist:
@@ -41,16 +44,13 @@ class Brew:
             minidom.parseString(response.content)
 
     def check_robots(self):
-        print "robots!!!!!!!!!!!!"
         for url in self.urls_robots:
-            print "FIRST URL"
             response = requests.get(self._create_url(url))
             if not response.status_code == 200:
                 raise Exception("robots({0}) response not 200".format(url))
             for line in response.content.splitlines():
                 if not line.startswith(('User-agent: ', 'Disallow: ', 'Allow: ')):
                     raise Exception("robots txt ({0}) has strange content".format(url))
-        print "TILL THE SNED"
 
     def check_all(self):
         """ find all functions starting with "check_" and call them"""

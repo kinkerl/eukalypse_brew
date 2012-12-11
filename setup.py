@@ -35,7 +35,7 @@ setup(
     packages=find_packages('src'),
     description='quick and dirty website testing toolbox',
     long_description=__doc__,
-    install_requires=['requests', 'lxml'],
+    install_requires=['requests', 'lxml', 'furl'],
     tests_require=['tox'],
     cmdclass={'test': Tox},
     classifiers=[
