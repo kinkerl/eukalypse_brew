@@ -5,4 +5,10 @@ eukalypse_bew
     :alt: Travis CI Build Status
 
 
-things for website testing
+website sanity checks from the users point of view
+
+Resources
+---------
+
+* `Documentation <http://eukalypse_brew.readthedocs.org/>`_
+* `Continuous Integration https://travis-ci.org/kinkerl/eukalypse_brew/>`_
