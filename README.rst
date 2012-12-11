@@ -11,4 +11,4 @@ Resources
 ---------
 
 * `Documentation <http://eukalypse_brew.readthedocs.org/>`_
-* `Continuous Integration https://travis-ci.org/kinkerl/eukalypse_brew/>`_
+* `Continuous Integration <https://travis-ci.org/kinkerl/eukalypse_brew/>`_
