@@ -23,7 +23,7 @@ class Brew:
         for url in self.urls_exist:
             response = requests.get(self._create_url(url))
             if not response.status_code == 200:
-                raise Exception("url exists ({0}) response not 200".format(url))
+                raise Exception("url ({0}) response not 200".format(url))
 
     def check_sitemap(self):
         for url in self.urls_sitemap:
@@ -41,6 +41,7 @@ class Brew:
                 if not xmlschema.validate(xmldoc):
                     raise Exception("sitemap does not validate")
 
+            #if the xml is valid but can not get parsed, this will raise an exception
             minidom.parseString(response.content)
 
     def check_robots(self):
@@ -50,7 +51,7 @@ class Brew:
                 raise Exception("robots({0}) response not 200".format(url))
             for line in response.content.splitlines():
                 if not line.startswith(('User-agent: ', 'Disallow: ', 'Allow: ')):
-                    raise Exception("robots txt ({0}) has strange content".format(url))
+                    raise Exception("robots.txt ({0}) has strange content".format(url))
 
     def check_all(self):
         """ find all functions starting with "check_" and call them"""
