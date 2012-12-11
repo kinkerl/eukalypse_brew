@@ -26,7 +26,8 @@ class Tox(TestCommand):
 install_requires = [
     'requests',
     'lxml',
-    'furl'
+    'furl',
+    'beautifulsoup4',
 ]
 
 
