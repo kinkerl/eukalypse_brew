@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 from eukalypse_brew import Brew
-import unittest
-from mock import MagicMock
+import sys
+if sys.version_info < (2, 7):
+    import unittest2 as unittest
+else:
+    import unittest
+from mock import patch
 
 
 class MyBrewTest(unittest.TestCase):
@@ -10,17 +14,15 @@ class MyBrewTest(unittest.TestCase):
         self.brew = Brew("http://www5.mercedes-benz.com/")
         self.brew_bad = Brew("http://isodontexistabc.com/")
 
-    def test_checkall(self):
-        brew = Brew("http://www5.mercedes-benz.com/")
-        brew.check_sitemap = MagicMock()
-        brew.check_robots = MagicMock()
-        brew.check_exist = MagicMock()
+    @patch.object(Brew, 'check_sitemap')
+    @patch.object(Brew, 'check_robots')
+    @patch.object(Brew, 'check_exist')
+    def test_checkall(self, mock_exist, mock_robots, mock_sitemap):
+        self.brew.check_all()
 
-        brew.check_all()
-
-        brew.check_sitemap.assert_called_with()
-        brew.check_robots.assert_called_with()
-        brew.check_exist.assert_called_with()
+        mock_sitemap.assert_called_with()
+        mock_robots.assert_called_with()
+        mock_exist.assert_called_with()
 
     def test_exist_success(self):
         self.brew.check_exist()
@@ -32,31 +34,13 @@ class MyBrewTest(unittest.TestCase):
         self.brew.check_robots()
 
     def test_exist_failure(self):
-        try:
+        with self.assertRaises(Exception):
             self.brew_bad.check_exist()
-        except:
-            pass
-        else:
-            # else should not happen. there should be an error
-            # and this else block should be skipped
-            self.assertTrue(False)
 
     def test_sitemap_failure(self):
-        try:
+        with self.assertRaises(Exception):
             self.brew_bad.check_sitemap()
-        except:
-            pass
-        else:
-            # else should not happen. there should be an error
-            # and this else block should be skipped
-            self.assertTrue(False)
 
     def test_robots_failure(self):
-        try:
+        with self.assertRaises(Exception):
             self.brew_bad.check_robots()
-        except:
-            pass
-        else:
-            # else should not happen. there should be an error
-            # and this else block should be skipped
-            self.assertTrue(False)
