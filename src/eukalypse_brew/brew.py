@@ -61,7 +61,9 @@ class Brew:
                 urltype = 'generic'
             else:
                 raise Exception("unknown urls_exist definition")
+            self._check_exist(url, urltype)
 
+    def _check_exist(self, url, urltype):
             response = requests.get(self._create_url(url))
             if not response.status_code == 200:
                 raise Exception("url ({0}) response not 200".format(url))

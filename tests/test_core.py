@@ -43,6 +43,14 @@ class MyBrewTest(unittest.TestCase):
     def test_homelink_success(self):
         self.brew.check_homelink()
 
+    def test_exist_xml_invalid(self):
+        with self.assertRaises(Exception):
+            self.brew._check_exist('myxml_invalid.xml', 'xml')
+
+    def test_exist_json_invalid(self):
+        with self.assertRaises(Exception):
+            self.brew._check_exist('myjson_invalid.json', 'json')
+
     def test_exist_failure(self):
         with self.assertRaises(Exception):
             self.brew_bad.check_exist()
