@@ -13,9 +13,9 @@ CONTENT_TYPES = {
 
 class Brew:
 
-    sitemap_schema_url = 'http://www.sitemaps.org/schemas/sitemap/0.9'
-
     def __init__(self, base):
+        self.sitemap_schema_url = 'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'
+
         self.base = base
         self.switch_homelink = True
         self.urls_root = ['/']
@@ -88,7 +88,7 @@ class Brew:
             response = requests.get(url)
             if not response.status_code == 200:
                 raise Exception("sitemap({0}) response not 200".format(url))
-            r = requests.get(self.sitemap_schema_url + '/siteindex.xsd')
+            r = requests.get(self.sitemap_schema_url)
             if not r.status_code == 200:
                 raise Exception("sitemap schema ({0}) response not 200".format(url))
 
