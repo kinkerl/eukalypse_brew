@@ -12,12 +12,18 @@ class MyBrewTest(unittest.TestCase):
 
     def setUp(self):
         self.brew = Brew("http://kinkerl.github.com/eukalypse_brew")
-        self.brew.url_exist = [
-            ('index.html'),
-            ('myxml.xml', 'xml'),
-            ('myjson.json', 'json'),
+        self.brew.urls_exist = [
+            ('/index.html',),
+            ('/myxml.xml', 'xml'),
+            ('/myjson.json', 'json'),
         ]
-        self.brew_bad = Brew("http://isodontexistabc.com/")
+        self.brew_bad = Brew("http://kinkerl.github.com/eukalypse_brew")
+        self.brew_bad.urls_exist = [
+            ('/myxml.xml', 'xml', 'error'),
+        ]
+        self.brew_bad.urls_root = ['/index2.html']
+        self.brew_bad.urls_sitemap = ['/sitemap_doesnotexist.xml']
+        self.brew_bad.urls_robots = ['/robots_doesnotexist.txt']
 
     @patch.object(Brew, 'check_sitemap')
     @patch.object(Brew, 'check_robots')
@@ -45,11 +51,25 @@ class MyBrewTest(unittest.TestCase):
 
     def test_exist_xml_invalid(self):
         with self.assertRaises(Exception):
-            self.brew._check_exist('myxml_invalid.xml', 'xml')
+            self.brew._check_exist('/myxml_invalid.xml', 'xml')
 
     def test_exist_json_invalid(self):
         with self.assertRaises(Exception):
-            self.brew._check_exist('myjson_invalid.json', 'json')
+            self.brew._check_exist('/myjson_invalid.json', 'json')
+
+    def test_exist_wrong_content_type(self):
+        with self.assertRaises(Exception):
+            self.brew._check_exist('/myjson.json', 'xml')
+
+        with self.assertRaises(Exception):
+            self.brew._check_exist('/myxml.xml', 'json')
+
+        with self.assertRaises(Exception):
+            self.brew._check_exist('/index.html', 'unknown')
+
+    def test_exist_file_not_found(self):
+        with self.assertRaises(Exception):
+            self.brew._check_exist('/index_not_found.html', 'generic')
 
     def test_exist_failure(self):
         with self.assertRaises(Exception):

@@ -28,6 +28,7 @@ install_requires = [
     'lxml',
     'furl',
     'beautifulsoup4',
+    'simplejson',
 ]
 
 
@@ -35,7 +36,7 @@ setup(
     name="eukalypse_brew",
     author="Dennis Schwertel",
     author_email="s@digitalkultur.net",
-    version='0.1',
+    version='0.2',
     url='https://github.com/kinkerl/eukalypse_brew',
     #license='MIT',
     zip_safe=False,

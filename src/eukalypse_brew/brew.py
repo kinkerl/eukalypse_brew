@@ -3,11 +3,11 @@ from lxml import etree
 from xml.dom import minidom
 from furl import furl
 from bs4 import BeautifulSoup
-
+import simplejson as json
 
 CONTENT_TYPES = {
     'xml': ('text/xml', 'application/rss+xml'),
-    'json': ('application/json'),
+    'json': ('application/json',),
 }
 
 
@@ -19,7 +19,7 @@ class Brew:
         self.base = base
         self.switch_homelink = True
         self.urls_root = ['/']
-        self.urls_exist = [('/')]
+        self.urls_exist = [('/',)]
         self.urls_sitemap = ['/sitemap.xml']
         self.urls_robots = ['/robots.txt']
 
@@ -29,6 +29,8 @@ class Brew:
         return f.url
 
     def _verify_content_type(self, content_type, key):
+        print content_type
+        print CONTENT_TYPES[key]
         for expected_type in CONTENT_TYPES[key]:
             if expected_type in content_type:
                 return True
@@ -48,7 +50,7 @@ class Brew:
     def check_exist(self):
         """
         urls_exist = [
-                ('/generic.html'),
+                ('/generic.html',),
                 ('/myxml.xml', 'xml'),
                 ('/myjson.json','json')
             ]
@@ -57,10 +59,10 @@ class Brew:
             if len(target) == 2:
                 url, urltype = target
             elif len(target) == 1:
-                url = target
+                url = target[0]
                 urltype = 'generic'
             else:
-                raise Exception("unknown urls_exist definition")
+                raise Exception("unknown urls_exist definition ({0})".format(target))
             self._check_exist(url, urltype)
 
     def _check_exist(self, url, urltype):
@@ -68,18 +70,19 @@ class Brew:
             if not response.status_code == 200:
                 raise Exception("url ({0}) response not 200".format(url))
             if urltype == 'xml':
+                #check if the response content type matches xml
+                if not self._verify_content_type(response.headers.get('content-type'), 'xml'):
+                    raise Exception("content-type for url ({0}) is set to ({1}) but should be one of ({2})".format(url, response.headers.get('content-type'), CONTENT_TYPES['xml']))
+
                 #check if valid xml. if not, this will fail
                 minidom.parseString(response.content)
 
-                #check if the response content type matches xml
-                if not self._verify_content_type(response.headers.get('content-type'), 'xml', url):
-                    raise Exception("content-type for url ({0}) is set to ({1}) but should be one of ({2})".format(url, response.headers.get('content-type'), CONTENT_TYPES['xml']))
             elif urltype == 'json':
-                # TODO(s@digitalkultur.net) check if valid json in response content
-
                 #check if the response content type matches json
-                if not self._verify_content_type(response.headers.get('content-type'), 'json', url):
+                if not self._verify_content_type(response.headers.get('content-type'), 'json'):
                     raise Exception("content-type for url ({0}) is set to ({1}) but should be one of ({2})".format(url, response.headers.get('content-type'), CONTENT_TYPES['json']))
+
+                json.loads(response.content)
             elif urltype == 'generic':
                 pass
             else:
