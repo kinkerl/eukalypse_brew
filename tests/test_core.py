@@ -17,12 +17,14 @@ class MyBrewTest(unittest.TestCase):
     @patch.object(Brew, 'check_sitemap')
     @patch.object(Brew, 'check_robots')
     @patch.object(Brew, 'check_exist')
-    def test_checkall(self, mock_exist, mock_robots, mock_sitemap):
+    @patch.object(Brew, 'check_homelink')
+    def test_checkall(self, mock_homelink, mock_exist, mock_robots, mock_sitemap):
         self.brew.check_all()
 
         mock_sitemap.assert_called_with()
         mock_robots.assert_called_with()
         mock_exist.assert_called_with()
+        mock_homelink.assert_called_with()
 
     def test_exist_success(self):
         self.brew.check_exist()
@@ -32,6 +34,9 @@ class MyBrewTest(unittest.TestCase):
 
     def test_robots_success(self):
         self.brew.check_robots()
+
+    def test_homelink_success(self):
+        self.brew.check_homelink()
 
     def test_exist_failure(self):
         with self.assertRaises(Exception):
@@ -44,3 +49,7 @@ class MyBrewTest(unittest.TestCase):
     def test_robots_failure(self):
         with self.assertRaises(Exception):
             self.brew_bad.check_robots()
+
+    def test_homelink_failure(self):
+        with self.assertRaises(Exception):
+            self.brew_bad.check_homelink()
