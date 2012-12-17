@@ -15,17 +15,17 @@ class Brew:
 
     sitemap_schema_url = 'http://www.sitemaps.org/schemas/sitemap/0.9'
 
-    def __init__(self, domain):
-        self.domain = domain
+    def __init__(self, base):
+        self.base = base
         self.switch_homelink = True
         self.urls_root = ['/']
         self.urls_exist = [('/')]
-        self.urls_sitemap = ['sitemap.xml']
-        self.urls_robots = ['robots.txt']
+        self.urls_sitemap = ['/sitemap.xml']
+        self.urls_robots = ['/robots.txt']
 
     def _create_url(self, url):
-        f = furl(self.domain)
-        f.path = url
+        f = furl(self.base)
+        f.path = str(f.path) + url
         return f.url
 
     def _verify_content_type(self, content_type, key):

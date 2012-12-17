@@ -11,7 +11,12 @@ from mock import patch
 class MyBrewTest(unittest.TestCase):
 
     def setUp(self):
-        self.brew = Brew("http://www5.mercedes-benz.com/")
+        self.brew = Brew("http://kinkerl.github.com/eukalypse_brew")
+        self.url_exist = [
+            ('index.html'),
+            ('myxml.xml', 'xml'),
+            ('myjson.json', 'json'),
+        ]
         self.brew_bad = Brew("http://isodontexistabc.com/")
 
     @patch.object(Brew, 'check_sitemap')
