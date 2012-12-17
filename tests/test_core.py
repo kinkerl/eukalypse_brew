@@ -12,7 +12,7 @@ class MyBrewTest(unittest.TestCase):
 
     def setUp(self):
         self.brew = Brew("http://kinkerl.github.com/eukalypse_brew")
-        self.url_exist = [
+        self.brew.url_exist = [
             ('index.html'),
             ('myxml.xml', 'xml'),
             ('myjson.json', 'json'),
