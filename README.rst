@@ -5,7 +5,7 @@ eukalypse_brew
     :alt: Travis CI Build Status
 
 
-website sanity checks from the users point of view
+website sanity checks from the users point of a view
 
 Resources
 ---------
